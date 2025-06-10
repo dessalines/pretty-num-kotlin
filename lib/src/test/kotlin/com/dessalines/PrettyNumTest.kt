@@ -7,7 +7,10 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class PrettyNumTest {
-    fun test(num: Long, expected: String) {
+    fun test(
+        num: Long,
+        expected: String,
+    ) {
         assertTrue(prettyFormat(num).equals(expected))
     }
 
