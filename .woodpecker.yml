@@ -1,0 +1,55 @@
+variables:
+  - &jdk "chainguard/jdk"
+
+steps:
+  prettier_markdown_check:
+    image: tmknom/prettier
+    commands:
+      - prettier -c "*.md" "*.yml"
+    when:
+      - event: pull_request
+
+  check_formatting:
+    image: *jdk
+    commands:
+      - ./gradlew lintKotlin
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  build_project:
+    image: *jdk
+    commands:
+      - ./gradlew buildDebug
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  check_lint:
+    image: *jdk
+    commands:
+      - ./gradlew lint
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  run_tests:
+    image: *jdk
+    commands:
+      - ./gradlew testDebug
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  notify:
+    image: alpine:3
+    commands:
+      - apk add curl
+      - "curl -d'pretty-num-kotlin build ${CI_PIPELINE_STATUS}: ${CI_PIPELINE_URL}' ntfy.sh/pretty_num_kotlin_ci"
+    when:
+      - event: pull_request
+        status: [failure, success]
