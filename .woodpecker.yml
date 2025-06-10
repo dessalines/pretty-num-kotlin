@@ -21,7 +21,7 @@ steps:
   build_project:
     image: *jdk
     commands:
-      - ./gradlew buildDebug
+      - ./gradlew build
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:
@@ -30,7 +30,7 @@ steps:
   run_tests:
     image: *jdk
     commands:
-      - ./gradlew testDebug
+      - ./gradlew test
     environment:
       GRADLE_USER_HOME: ".gradle"
     when:
